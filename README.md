@@ -12,6 +12,11 @@ Link to download turdus merula's Linux build (this is required for this UI to wo
 You only have to use the link if you haven't downloaded the Linux version of turdus merula already.
 The pwnerblu UI doesn't give you the option to do untethered downgrades yet. Currently, it only does tethered downgrades.
 
+How to launch the UI? Go to the turdus merula folder (that's where you should put the script at), and then type this command:
+./pwnerblu-UI.sh
+
+When it asks for your password, type it in.
+
 This does not mean turdus merula itself is limited to untethered downgrades.
 It simply means that this UI script doesn't expose untethered options (yet).
 

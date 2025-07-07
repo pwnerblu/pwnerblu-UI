@@ -10,5 +10,6 @@ This is a BETA. Please report any bugs you may have or any polishing suggestions
 Link to download turdus merula's Linux build (this is required for this UI to work): https://sep.lol/files/releases/test/v1.0.1-linux/turdus_merula_v1.0.1-1_linux.tar
 
 You only have to use the link if you haven't downloaded the Linux version of turdus merula already.
+This script doesn't give you the option to do untethered downgrades yet. This version only does tethered downgrades.
 
 Feel free to fork this repository and contribute to improvements for the interface script!

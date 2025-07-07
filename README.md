@@ -16,3 +16,5 @@ This does not mean turdus merula itself is limited to untethered downgrades.
 It simply means that this UI script doesn't expose untethered options (yet).
 
 Feel free to fork this repository and contribute to improvements for the interface script!
+If you fork this repository, do NOT include the full turdus merula project or its files in your fork. Only the pwnerblu UI.
+Instead, always redirect users to the official turdus merula website for downloading Turdus Merula.

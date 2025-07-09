@@ -5,6 +5,56 @@ sanitize_path() {
     echo "$1" | sed -e 's/^["'\''"]//;s/["'\''"]$//'
 }
 
+# Function to select a file from a folder with specific extension and optional exclusion pattern
+select_file_from_dir() {
+    local ext="$1"
+    local prompt="$2"
+    local result_var="$3"
+    local exclude_pattern="$4"
+
+    if [[ -n "$exclude_pattern" ]]; then
+        mapfile -t files < <(find "./image4" -maxdepth 1 -type f -name "*.$ext" ! -iname "*$exclude_pattern*" | sort)
+    else
+        mapfile -t files < <(find "./image4" -maxdepth 1 -type f -name "*.$ext" | sort)
+    fi
+
+    if [ ${#files[@]} -eq 0 ]; then
+        echo "No .$ext files found in ./image4/ matching criteria."
+        return 1
+    fi
+
+    echo "$prompt"
+    select file in "${files[@]}"; do
+        if [[ -n "$file" ]]; then
+            full_path=$(realpath "$file")
+            printf -v "$result_var" '%s' "$full_path"
+            break
+        else
+            echo "Invalid selection. Try again."
+        fi
+    done
+    return 0
+}
+
+# Function to select IPSW from script directory
+select_ipsw_file() {
+    mapfile -t ipsw_files < <(find . -maxdepth 1 -type f -iname "*.ipsw" | sort)
+    if [ ${#ipsw_files[@]} -eq 0 ]; then
+        echo "No IPSW files found in this directory. Returning to main menu..."
+        return 1
+    fi
+
+    echo "Select IPSW file for downgrade:"
+    select ipsw in "${ipsw_files[@]}"; do
+        if [[ -n "$ipsw" ]]; then
+            IPSW=$(basename "$ipsw")
+            return 0
+        else
+            echo "Invalid selection. Try again."
+        fi
+    done
+}
+
 # Prompt for sudo password
 read -s -p "Enter your password to continue: " user_pass
 echo
@@ -16,13 +66,11 @@ if [ $? -ne 0 ]; then
 fi
 
 # Welcome Message
-echo "pwnerblu UI - beta v0.6"
+echo "pwnerblu UI - beta v0.8"
 echo "This is a user interface to make turdus merula easier to use."
-echo "This script is for A10 devices as of right now. A9/A9X support is not in this script yet."
-echo "This script is by pwnerblu."
-echo "NOTE: I did not originally create turdus merula, nor am I affiliated with the developers of turdus merula."
-echo "This works on the test build of turdus merula (turdus_merula_v1.0.1-1_linux) for Linux."
-echo "If there is any issue with this script, please let me know."
+echo "Currently supports A10 devices only."
+echo "By pwnerblu (not affiliated with turdus merula developers)."
+echo "Uses test build: turdus_merula_v1.0.1-1_linux"
 
 # Main Menu Loop
 while true; do
@@ -36,22 +84,11 @@ while true; do
 
     case $choice in
         1)
-            echo "Select target SEP file..."
-            read -e -p "Path to target SEP: " targetSEP
-            targetSEP=$(sanitize_path "$targetSEP")
-            targetSEP=$(realpath "$targetSEP" 2>/dev/null)
+            if ! select_file_from_dir "im4p" "Select target SEP file (.im4p):" targetSEP; then continue; fi
+            if ! select_file_from_dir "img4" "Select iBoot file (.img4, excludes SEP):" iBoot "SEP"; then continue; fi
+            if ! select_file_from_dir "img4" "Select signed SEP file (.img4, excludes iBoot):" signedSEP "iBoot"; then continue; fi
 
-            echo "Select iBoot file..."
-            read -e -p "Path to iBoot: " iBoot
-            iBoot=$(sanitize_path "$iBoot")
-            iBoot=$(realpath "$iBoot" 2>/dev/null)
-
-            echo "Select signed SEP file..."
-            read -e -p "Path to signed SEP: " signedSEP
-            signedSEP=$(sanitize_path "$signedSEP")
-            signedSEP=$(realpath "$signedSEP" 2>/dev/null)
-
-            # Confirm existence of files
+            # Confirm existence
             for file in "$targetSEP" "$iBoot" "$signedSEP"; do
                 if [ ! -f "$file" ]; then
                     echo "Error: File not found — $file"
@@ -59,13 +96,14 @@ while true; do
                 fi
             done
 
+            echo ""
             echo "Running Boot Tethered with:"
             echo "Target SEP: $targetSEP"
             echo "iBoot: $iBoot"
             echo "Signed SEP: $signedSEP"
 
             read -p "Is your device already in DFU mode? (y/n): " confirm
-            if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            if [[ "$confirm" =~ ^[Yy]$ ]]; then
                 sudo ./ra1n_libusb -t "$iBoot" -i "$signedSEP" -p "$targetSEP"
                 echo "Your device should now finish booting."
             else
@@ -74,35 +112,30 @@ while true; do
             ;;
 
         2)
-            echo "Select IPSW file for downgrade..."
-            read -e -p "Path to target IPSW: " IPSW
-            IPSW=$(sanitize_path "$IPSW")
-            IPSW=$(realpath "$IPSW" 2>/dev/null)
+            if ! select_ipsw_file; then continue; fi
 
-            if [ ! -f "$IPSW" ]; then
-                echo "Error: IPSW file not found — $IPSW"
-                continue
-            fi
-
+            echo ""
             echo "Running Downgrade Tethered with:"
             echo "IPSW: $IPSW"
 
             read -p "Is your device already in pwnDFU mode? (y/n): " confirm
-            if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            if [[ "$confirm" =~ ^[Yy]$ ]]; then
                 sudo ./idevicerestore -o "$IPSW"
-                echo "Downgrade Finished! Your device will now boot to recovery mode. Put your device into DFU mode and then use the Boot Tethered option."
-                echo "Every time your device reboots or shuts down, you have to put your device into DFU mode and use Boot Tethered to boot it up again."
             else
                 sudo ./ra1n_libusb -ED
                 sudo ./idevicerestore -o "$IPSW"
-                echo "Downgrade Finished! Your device will now boot to recovery mode. Put your device into DFU mode and then use the Boot Tethered option."
-                echo "Every time your device reboots or shuts down, you have to put your device into DFU mode and use Boot Tethered to boot it up again."
             fi
+
+            echo ""
+            echo "Downgrade finished!"
+            echo "Your device will now boot to recovery mode."
+            echo "Put your device into DFU mode and use the Boot Tethered option."
+            echo "NOTE: Every time your device reboots or shuts down, you'll need to repeat Boot Tethered."
             ;;
 
         3)
             read -p "Is your device already in DFU mode? (y/n): " confirm
-            if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            if [[ "$confirm" =~ ^[Yy]$ ]]; then
                 sudo ./ra1n_libusb -ED
             else
                 echo "Please put your device into DFU mode and try again."
@@ -119,4 +152,3 @@ while true; do
             ;;
     esac
 done
-

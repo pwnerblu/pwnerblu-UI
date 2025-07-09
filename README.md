@@ -23,6 +23,14 @@ When it asks for your password, type it in.
 This does not mean turdus merula itself is limited to untethered downgrades.
 It simply means that this UI script doesn't expose untethered options (yet).
 
+Updates as of v0.8:
+
+Makes file selection easier for IPSW, SEP, iBoot, and signed SEP. 
+You do not have to drag the file into the terminal no more.
+
+The IPSW must be in the turdus merula folder for the script to detect it.
+If there is any issues with this script, please let me know ASAP.
+
 Feel free to fork this repository and contribute to improvements for the interface script!
 If you fork this repository, do NOT include the full turdus merula project or its files in your fork. Only the pwnerblu UI.
 Instead, always redirect users to the official turdus merula website for downloading Turdus Merula.

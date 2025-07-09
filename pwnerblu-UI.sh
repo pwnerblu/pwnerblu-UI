@@ -68,7 +68,7 @@ fi
 # Welcome Message
 echo "pwnerblu UI - beta v0.8"
 echo "This is a user interface to make turdus merula easier to use."
-echo "Currently supports A10 devices only."
+echo "Currently supports A10 devices only. A9 devices wasn't tested in this script yet."
 echo "By pwnerblu (not affiliated with turdus merula developers)."
 echo "Uses test build: turdus_merula_v1.0.1-1_linux"
 

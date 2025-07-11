@@ -1,6 +1,7 @@
 pwnerblu UI is a text-based user interface designed to run with turdus merula's Linux build.
 It is meant to make turdus merula easier to use. I'm not affiliated, sponsored, or endorsed by the original developers of turdus merula.
 I also didn't create Turdus Merula originally.
+As of now, update functionality has been implemented into this script. This is to ensure people are always on the latest version of pwnerblu-UI.
 
 To install this UI, make sure you have turdus merula's linux build on your PC. This interface will not work fully without turdus merula.
 After downloading the UI, drag "pwnerblu-UI.sh" to the turdus merula Linux folder (turdus_merula_v1.0.1-1_linux).

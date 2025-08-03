@@ -123,7 +123,7 @@ if version_gt "$ACTUAL_VERSION" "$EXPECTED_VERSION"; then
         mkdir temporary
         curl -L -o temporary/pwnerblu-UI.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/pwnerblu-UI.sh
         curl -L -o temporary/pwnerblu-UI-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/pwnerblu-UI-version.txt
-        curl -L -o temporary/update.sh https://download1078.mediafire.com/c13x6u78ehwgJZIfRQ8EjXYV0_8jTADaRv6skO4NPqHYnQKJTOV_h7enot11T8gLc4IG-Ou2HLxJM9CkHdmSYGWqWX6WedOpXYqRP_lib6i3m5p_nK7Ihtwr4hEutZD1pwOs6uYZr_6Jo09mWio0L-0Nz_LsnDb5hm5CGVRApRFP/8wlngaukhwx7pcn/update.sh
+        curl -L -o temporary/update.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/update.sh
         echo "Download complete. Starting the update to version $ACTUAL_VERSION"
         cd temporary
         chmod +x update.sh
@@ -141,7 +141,7 @@ fi
 
 
 # Welcome Message
-echo "pwnerblu UI - beta v0.8.5"
+echo "pwnerblu UI - beta v0.8.5 (re-release)"
 echo "This is a user interface to make turdus merula easier to use."
 echo "Currently supports A10 devices only."
 echo "By pwnerblu (not affiliated with turdus merula developers)."

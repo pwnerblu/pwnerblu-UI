@@ -5,6 +5,7 @@ As of now, update functionality has been implemented into this script. This is t
 
 To install this UI, make sure you have turdus merula's linux build on your PC. This interface will not work fully without turdus merula.
 After downloading the UI, drag "pwnerblu-UI.sh" to the turdus merula Linux folder (turdus_merula_v1.0.1-1_linux).
+UPDATE: the original update.sh link did not work so I had to update it! v0.8.5-beta has been re-released with the updater fix.
 
 There is currently support for A10 devices with this UI. A9 support isn't guaranteed with this interface yet (although turdus merula does support A9/A10).
 This is a BETA. Please report any bugs you may have or any polishing suggestions.

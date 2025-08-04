@@ -108,7 +108,7 @@ fi
 if [[ "$1" == "-cleanup" ]]; then
     echo "Congratulations! pwnerblu UI is now updated to version $EXPECTED_VERSION"
     echo "Cleaning up temporary update files..."
-    rm -rf temporary
+    sudo rm -rf temporary
     echo "Cleanup complete. Please run the script again to use it."
     exit 0
 fi

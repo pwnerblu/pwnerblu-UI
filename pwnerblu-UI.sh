@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# pwnerblu-UI is licensed under the GNU General Public License v3.0
+# Do not include any binaries of turdus merula in your forks. The script uses the sep.lol link for a reason.
+# Copyright (C) 2025 pwnerblu
+# This program is free software: You can redistribute it and/or modify 
+# it under the terms of the GNU General Public License as published by
+# the Free Software foundation, either Version 3 of the license, or any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
+
 # Function to clean up file paths and remove surrounding quotes
 sanitize_path() {
     echo "$1" | sed -e 's/^["'\''"]//;s/["'\''"]$//'

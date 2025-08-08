@@ -115,6 +115,7 @@ if [[ "$1" == "-cleanup" ]]; then
 fi
 
 # Update Checker
+EXPECTED_VERSION="1.1.0"
 echo "Checking for updates..."
 rm -f corefiles/server-version.txt
 curl -s -L -o corefiles/server-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/server-version.txt

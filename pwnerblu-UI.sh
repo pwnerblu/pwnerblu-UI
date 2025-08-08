@@ -88,7 +88,7 @@ SUDO_KEEP_ALIVE_PID=$!
 trap 'kill $SUDO_KEEP_ALIVE_PID 2>/dev/null' EXIT
 
 # Anti-Tamper Version Check
-EXPECTED_VERSION="1.0.2"
+EXPECTED_VERSION="1.1.0"
 VERSION_FILE="corefiles/pwnerblu-UI-version.txt"
 
 if [[ ! -f "$VERSION_FILE" ]]; then
@@ -250,7 +250,8 @@ fi
 
 
 # Welcome Message
-echo "pwnerblu UI - v1.0.2"
+echo "pwnerblu UI - v1.1"
+echo "v1.1 is an update to fix an issue where it says "up to date" when a minor version changes."
 echo "This is a user interface to make turdus merula easier to use."
 echo "Supports every device that can be downgraded with turdus merula. (A9/A10)"
 echo "By pwnerblu (not affiliated with turdus merula developers)."

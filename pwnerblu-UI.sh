@@ -88,7 +88,7 @@ SUDO_KEEP_ALIVE_PID=$!
 trap 'kill $SUDO_KEEP_ALIVE_PID 2>/dev/null' EXIT
 
 # Anti-Tamper Version Check
-EXPECTED_VERSION="1.0"
+EXPECTED_VERSION="1.0.2"
 VERSION_FILE="corefiles/pwnerblu-UI-version.txt"
 
 if [[ ! -f "$VERSION_FILE" ]]; then
@@ -117,7 +117,7 @@ fi
 # Update Checker
 echo "Checking for updates..."
 rm -f corefiles/server-version.txt
-curl -L -o corefiles/server-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/server-version.txt
+curl -s -L -o corefiles/server-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/server-version.txt
 
 VERSION_FILE="corefiles/server-version.txt"
 if [[ ! -f "$VERSION_FILE" ]]; then
@@ -138,9 +138,9 @@ if version_gt "$ACTUAL_VERSION" "$EXPECTED_VERSION"; then
     if [[ "$update_confirm" =~ ^[Yy]$ ]]; then
         echo "Downloading the update files for version $ACTUAL_VERSION..."
         mkdir temporary
-        curl -L -o temporary/pwnerblu-UI.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/pwnerblu-UI.sh
-        curl -L -o temporary/pwnerblu-UI-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/pwnerblu-UI-version.txt
-        curl -L -o temporary/update.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/update.sh
+        curl -s -L -o temporary/pwnerblu-UI.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/pwnerblu-UI.sh
+        curl -s -L -o temporary/pwnerblu-UI-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/pwnerblu-UI-version.txt
+        curl -s -L -o temporary/update.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/update.sh
         echo "Download complete. Starting the update to version $ACTUAL_VERSION"
         cd temporary
         chmod +x update.sh
@@ -153,6 +153,60 @@ if version_gt "$ACTUAL_VERSION" "$EXPECTED_VERSION"; then
 else
     echo "pwnerblu UI is up to date."
 fi
+
+SETTINGS_FILE="corefiles/settings.txt"
+
+if [[ ! -f "$SETTINGS_FILE" ]]; then
+    echo ""
+    read -p "Would you like to opt into beta updates for pwnerblu-UI? (y/n): " beta_opt
+    if [[ "$beta_opt" =~ ^[Yy]$ ]]; then
+        echo "beta=true" > "$SETTINGS_FILE"
+        echo "You are now opted into beta updates."
+    else
+        echo "beta=false" > "$SETTINGS_FILE"
+        echo "You are not opted into beta updates."
+    fi
+fi
+
+# Beta Update Check
+SETTINGS_FILE="corefiles/settings.txt"
+if grep -q "beta=true" "$SETTINGS_FILE"; then
+    echo "Checking for beta updates..."
+
+    BETA_VERSION_FILE="corefiles/betaserver-version.txt"
+    rm -f "$BETA_VERSION_FILE"
+    curl -s -L -o "$BETA_VERSION_FILE" https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/betaserver-version.txt
+
+    if [[ ! -f "$BETA_VERSION_FILE" ]]; then
+        echo "Beta update check failed: unable to fetch version data."
+    else
+        BETA_VERSION=$(<"$BETA_VERSION_FILE" | tr -d '\r\n')
+
+        if [[ "$BETA_VERSION" == "none" ]]; then
+            echo "There are no beta updates available at this time."
+        elif version_gt "$BETA_VERSION" "$EXPECTED_VERSION"; then
+            echo "A beta update to version $BETA_VERSION is available."
+            read -p "Would you like to update to the beta version? (y/n): " beta_confirm
+            if [[ "$beta_confirm" =~ ^[Yy]$ ]]; then
+                echo "Downloading beta update files..."
+                mkdir -p temporary
+                curl -L -o temporary/pwnerblu-UI.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI-beta/refs/heads/main/pwnerblu-UI.sh
+                curl -L -o temporary/pwnerblu-UI-version.txt https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI-beta/refs/heads/main/corefiles/pwnerblu-UI-version.txt
+                curl -L -o temporary/update.sh https://raw.githubusercontent.com/pwnerblu/pwnerblu-UI/refs/heads/main/corefiles/update.sh
+                echo "Download complete. Starting the beta update to version $BETA_VERSION"
+                cd temporary
+                chmod +x update.sh
+                sudo ./update.sh
+                exit 0
+            else
+                echo "Beta update declined. Continuing with current version."
+            fi
+        else
+            echo "No newer beta version available."
+        fi
+    fi
+fi
+
 
 # Check for turdus merula binaries
 echo "Checking if the turdus merula binary exists..."
@@ -196,7 +250,7 @@ fi
 
 
 # Welcome Message
-echo "pwnerblu UI - v1.0"
+echo "pwnerblu UI - v1.0.2"
 echo "This is a user interface to make turdus merula easier to use."
 echo "Supports every device that can be downgraded with turdus merula. (A9/A10)"
 echo "By pwnerblu (not affiliated with turdus merula developers)."

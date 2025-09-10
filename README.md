@@ -1,3 +1,6 @@
+UPDATE: this project is no longer being maintained.
+A9 doesn't work in this script. 
+
 pwnerblu UI is a text-based user interface designed to run with turdus merula's Linux build.
 It is meant to make turdus merula easier to use. I'm not affiliated, sponsored, or endorsed by the original developers of turdus merula.
 I also didn't create Turdus Merula originally.
